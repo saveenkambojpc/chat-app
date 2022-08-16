@@ -1,11 +1,59 @@
-import React, { createContext, useContext, useState } from "react";
+import { getSuggestedQuery } from "@testing-library/react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { auth, database } from "../misc/firebase";
 
 export const profileContext = createContext();
 
 export function ProfileProvider({ children }) {
-    const [profile] = useState(false);
-    console.log(children)
-    return <profileContext.Provider value={profile}>
+
+    const [profile, setProfile] = useState(null);
+    const [isLoading,setIsLoading] = useState(true);
+
+    let userRef;
+
+    useEffect(() => {
+        const authUnsub = auth.onAuthStateChanged((authObj) => {
+            if (authObj) {
+
+                userRef = database.ref(`/profiles/${authObj.uid}`);
+                
+                userRef.on('value', (snap) => {
+                    const { name, createdAt } = snap.val();
+
+
+                    const data = {
+                        name,
+                        createdAt,
+                        uid: authObj.uid,
+                        email: authObj.email,
+                    }
+                    setProfile(data)
+                    setIsLoading(false);
+                })
+                // user signin
+
+            } else {
+
+                if(userRef){
+                    userRef.off();
+                }
+                // user doesn't signin
+                setProfile(null);
+                getSuggestedQuery(false);
+            }
+        })
+
+        return ()=>{
+            authUnsub();
+
+            if(userRef){
+                userRef.off();
+            }
+        }
+    }, [])
+
+    const value = useMemo(() => ({isLoading,profile}), [])
+    return <profileContext.Provider value={value}>
         {children}
     </profileContext.Provider>
 }
