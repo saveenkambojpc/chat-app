@@ -11,7 +11,6 @@ const EditableInput = ({ name, initialValue, onSave, label = null, placeholder =
     }, [])
 
     const onSaveClick = async () => {
-        console.log("Inside onSaveClick");
         const trimmed = input.trim();
 
         if (trimmed === '') {

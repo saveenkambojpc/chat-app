@@ -10,7 +10,7 @@ export default function PrivateRoute({children,...routeProps}) {
     // const profile = false;
     // const profile = useContext(profileContext);
     const {profile, isLoading} = useProfile();
-    console.log(profile,isLoading);
+    
     if(isLoading){
       return <Container>
         <Loader center vertical size="md" content="Loading Private route...." speed='slow' />
