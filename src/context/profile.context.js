@@ -42,8 +42,7 @@ export function ProfileProvider({ children }) {
             }
         }
     }, [])
-    const value = useMemo(() => ({isLoading,profile}), [])
-    return <profileContext.Provider value={value}>
+    return <profileContext.Provider value={{isLoading,profile}}>
         {children}
     </profileContext.Provider>
 }

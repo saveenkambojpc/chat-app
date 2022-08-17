@@ -44,6 +44,9 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "import/no-extraneous-dependencies": "off",
-    "no-unused-vars":"off"
+    "no-unused-vars":"off",
+    "react/jsx-no-constructed-context-values":"warn",
+    "react/function-component-definition":"off",
+    "arrow-body-style":"off"
   }
 }
