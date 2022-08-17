@@ -12,7 +12,8 @@ export default function PublicRoute({ children, ...routeProps }) {
     </Container>
   }
 
-  if (!profile && !isLoading) {
+  // Profile found and isLoading is false then we redirect to home  page
+  if (profile && !isLoading) {
     return <Redirect to="/" />
   }
 

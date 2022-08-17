@@ -14,13 +14,9 @@ export function ProfileProvider({ children }) {
     useEffect(() => {
         const authUnsub = auth.onAuthStateChanged((authObj) => {
             if (authObj) {
-
-                userRef = database.ref(`/profiles/${authObj.uid}`);
-                
+                userRef = database.ref(`/profiles/${authObj.uid}`); 
                 userRef.on('value', (snap) => {
                     const { name, createdAt } = snap.val();
-
-
                     const data = {
                         name,
                         createdAt,
@@ -30,10 +26,7 @@ export function ProfileProvider({ children }) {
                     setProfile(data)
                     setIsLoading(false);
                 })
-                // user signin
-
             } else {
-
                 if(userRef){
                     userRef.off();
                 }
@@ -42,20 +35,16 @@ export function ProfileProvider({ children }) {
                 getSuggestedQuery(false);
             }
         })
-
         return ()=>{
             authUnsub();
-
             if(userRef){
                 userRef.off();
             }
         }
     }, [])
-
     const value = useMemo(() => ({isLoading,profile}), [])
     return <profileContext.Provider value={value}>
         {children}
     </profileContext.Provider>
 }
-
 export const useProfile = () => useContext(profileContext);

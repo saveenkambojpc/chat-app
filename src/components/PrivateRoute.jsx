@@ -3,6 +3,8 @@ import { Redirect, Route } from 'react-router';
 import { Container, Loader } from 'rsuite';
 import { useProfile } from '../context/profile.context';
 
+// Private route include the HOME page
+
 export default function PrivateRoute({children,...routeProps}) {
 
     // const profile = false;
@@ -17,10 +19,6 @@ export default function PrivateRoute({children,...routeProps}) {
 
     if(!profile && !isLoading){
       return <Redirect to="/signin" />
-    }
-
-    if(!profile){
-        return <Redirect to="/signin" />
     }
   return (
     <Route {...routeProps}>
