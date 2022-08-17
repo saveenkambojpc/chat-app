@@ -32,7 +32,7 @@ export function ProfileProvider({ children }) {
                 }
                 // user doesn't signin
                 setProfile(null);
-                getSuggestedQuery(false);
+                setIsLoading(false);
             }
         })
         return ()=>{

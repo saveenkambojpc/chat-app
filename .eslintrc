@@ -47,6 +47,8 @@
     "no-unused-vars":"off",
     "react/jsx-no-constructed-context-values":"warn",
     "react/function-component-definition":"off",
-    "arrow-body-style":"off"
+    "arrow-body-style":"off",
+    "react/self-closing-comp": "warn",
+    "spaced-comment":"warn"
   }
 }
