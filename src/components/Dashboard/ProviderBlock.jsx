@@ -1,15 +1,13 @@
 import firebase from 'firebase/app';
 import React, { useState } from 'react'
 import { Alert, Button, Icon, Tag } from 'rsuite';
-import { auth, database } from '../../misc/firebase'
+import { auth } from '../../misc/firebase'
 
 const ProviderBlock = () => {
-
     const [isConnected, setIsConnected] = useState({
         'google.com': auth.currentUser.providerData.some(p => p.providerId === 'google.com'),
         'facebook.com': auth.currentUser.providerData.some(p => p.providerId === 'facebook.com'),
     })
-
     const updateIsConnected = (providerId, value) => {
         setIsConnected(p => {
             return {
@@ -19,7 +17,6 @@ const ProviderBlock = () => {
         })
 
     }
-
     const unlink = async providerId => {
         try {
             if (auth.currentUser.providerData.length === 1) {
@@ -33,7 +30,6 @@ const ProviderBlock = () => {
             Alert.error(err.message, 4000);
         }
     }
-
     const link = async provider => {
         try {
             await auth.currentUser.linkWithPopup(provider);
@@ -45,8 +41,6 @@ const ProviderBlock = () => {
             Alert.error(err.message, 4000)
         }
     }
-
-
     const unlinkFacebook = () => {
         unlink('facebook.com');
     }
