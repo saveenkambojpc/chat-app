@@ -12,11 +12,12 @@ const ChatTop = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center">
-        <h4>
+      <div className="d-flex justify-content-between align-items-center pt-2">
+        <h3 className='text-disappear d-flex align-items-center '>
           <Icon
             componentClass={Link}
             to="/"
+            size='2x'
             icon="arrow-circle-left"
             className={
               isMobile
@@ -25,7 +26,7 @@ const ChatTop = () => {
             }
           />
           <span className="text-disappear">{name}</span>
-        </h4>
+        </h3>
 
         <ButtonToolbar className="ws-nowrap">todo </ButtonToolbar>
       </div>
