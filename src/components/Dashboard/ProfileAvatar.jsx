@@ -4,7 +4,7 @@ import { getNameInitial } from '../../misc/helpers';
 
 const ProfileAvatar = ({ name = 'RC', ...avatarProps }) => {
   return (
-    <Avatar circle {...avatarProps} size="lg" >
+    <Avatar circle {...avatarProps} >
       {getNameInitial(name)}
     </Avatar>
   );
