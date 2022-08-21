@@ -1,18 +1,49 @@
-export const getNameInitial = (name) =>{
-    const splitName = name.toUpperCase().split(" ");
+export const getNameInitial = name => {
+  const splitName = name.toUpperCase().split(' ');
 
-    if(splitName.length > 1){
-        return splitName[0][0] + splitName[1][0];
-    }
-    return splitName[0][0];
-}
+  if (splitName.length > 1) {
+    return splitName[0][0] + splitName[1][0];
+  }
+  return splitName[0][0];
+};
 
-export const transformToArrayWithId =(snapVal) =>{
-    
-    // console.log(Object.keys(snapVal)[0]);
-    // console.log(snapVal[Object.keys(snapVal)[0]])
+export const transformToArrayWithId = snapVal => {
+  // console.log(Object.keys(snapVal)[0]);
+  // console.log(snapVal[Object.keys(snapVal)[0]])
 
-    return snapVal ? Object.keys(snapVal).map(roomId=>{
-        return {...snapVal[roomId],id:roomId}
-    }) : []
+  return snapVal
+    ? Object.keys(snapVal).map(roomId => {
+        return { ...snapVal[roomId], id: roomId };
+      })
+    : [];
+};
+
+export async function getUserUpdates(userId, keyToUpdate, value, db) {
+  const updates = {};
+
+  updates[`/profiles/${userId}/${keyToUpdate}`] = value;
+
+  const getMsgs = db
+    .ref('/messages')
+    .orderByChild('author/uid')
+    .equalTo(userId)
+    .once('value');
+
+  const getRooms = db
+    .ref('/rooms')
+    .orderByChild('lastMessage/author/uid')
+    .equalTo(userId)
+    .once('value');
+
+  const [mSnap, rSnap] = await Promise.all([getMsgs, getRooms]);
+
+  mSnap.forEach(msgSnap => {
+    updates[`/messages/${msgSnap.key}/author/${keyToUpdate}`] = value;
+  });
+
+  rSnap.forEach(roomSnap => {
+    updates[`/rooms/${roomSnap.key}/lastMessage/author/${keyToUpdate}`] = value;
+  });
+
+  return updates;
 }
