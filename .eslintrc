@@ -49,6 +49,7 @@
     "react/function-component-definition":"off",
     "arrow-body-style":"off",
     "react/self-closing-comp": "warn",
-    "spaced-comment":"warn"
+    "spaced-comment":"warn",
+    "prefer-template":"warn"
   }
 }
