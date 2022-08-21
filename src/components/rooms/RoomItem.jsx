@@ -24,7 +24,7 @@ const RoomItem = ({ room }) => {
                 <ProfileAvatar
                   src={lastMessage.author.avatar}
                   name={lastMessage.author.name}
-                  size="md"
+                  size="lg"
                 />
               </div>
 

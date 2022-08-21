@@ -20,7 +20,7 @@ const Sidebar = () => {
         <DashboardToggle />
         <CreateRoomBtnModal />
         <Divider>Join Conversation</Divider>
-      </div>
+      </div> 
       <ChatRoomList aboveElementHeight={height+20} />
     </div>
   )
