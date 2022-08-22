@@ -22,9 +22,8 @@ const ChatBottom = () => {
   const [input, setInput] = useState('');
   const { profile } = useProfile();
   const { chatId } = useParams();
-  console.log(profile);
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const onInputChange = useCallback(val => {
     setInput(val);
@@ -50,23 +49,20 @@ const ChatBottom = () => {
 
     setIsLoading(true);
     // Update into database
-    try{
+    try {
       await database.ref().update(updates);
 
       setInput('');
-      setIsLoading(false)
-      
-      
+      setIsLoading(false);
+    } catch (err) {
+      Alert.error(err.message, 4000);
+      setIsLoading(false);
     }
-    catch(err){
-      Alert.error(err.message,4000)
-      setIsLoading(false)
-    } 
   };
 
-  const onPressEnter = (ev) =>{
+  const onPressEnter = ev => {
     onSendClick();
-  }
+  };
   return (
     <div>
       <InputGroup>
@@ -77,7 +73,11 @@ const ChatBottom = () => {
           onPressEnter={onPressEnter}
         />
 
-        <InputGroup.Button color="blue" onClick={onSendClick} disabled={isLoading}>
+        <InputGroup.Button
+          color="blue"
+          onClick={onSendClick}
+          disabled={isLoading}
+        >
           <Icon icon="send" />
         </InputGroup.Button>
       </InputGroup>
