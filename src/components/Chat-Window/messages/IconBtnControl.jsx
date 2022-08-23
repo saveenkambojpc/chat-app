@@ -17,6 +17,8 @@ const IconBtnControl = ({
   badgeContent,
   ...props
 }) => {
+
+  console.log("Value of badgeContent is : ", badgeContent);
   return (
     <div
       className="mb-2"
@@ -32,7 +34,7 @@ const IconBtnControl = ({
         >
           <IconButton
             {...props}
-            onClick={onclick}
+            onClick={onClick}
             circle
             size="xs"
             icon={<Icon icon={iconName}></Icon>}

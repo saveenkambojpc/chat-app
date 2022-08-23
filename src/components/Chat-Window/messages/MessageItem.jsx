@@ -2,17 +2,20 @@ import React, { memo } from 'react';
 import { Button } from 'rsuite';
 import TimeAgo from 'timeago-react';
 import { useCurrentRoom } from '../../../context/current-room.context';
-import { useHover } from '../../../misc/custom-hooks';
+import { useHover, useMediaQuery } from '../../../misc/custom-hooks';
 import { auth } from '../../../misc/firebase';
 import ProfileAvatar from '../../Dashboard/ProfileAvatar';
 import PresenceDot from '../../PresenceDot';
 import IconBtnControl from './IconBtnControl';
 import ProfileInfoBtnModal from './ProfileInfoBtnModal';
 
-const MessageItem = ({ message, handleAdmin }) => {
-  const { author, createdAt, text } = message;
+const MessageItem = ({ message, handleAdmin, handleLike }) => {
+  console.log(message);
+  const { author, createdAt, text, likes, likeCount } = message;
 
   const [selfRef, isHovered] = useHover();
+
+  const isMobile = useMediaQuery('(max-width: 992px)');
 
   const isAdmin = useCurrentRoom(v => v.isAdmin); //add memo at export
   const admins = useCurrentRoom(v => v.admins);
@@ -21,6 +24,16 @@ const MessageItem = ({ message, handleAdmin }) => {
   const isAuthor = auth.currentUser.uid === author.uid;
 
   const canGrantAdmin = isAdmin && !isAuthor;
+
+
+
+
+  const canShowIcons = isMobile || isHovered;
+  // Check whether the message is liked by a particular user
+  const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
+
+  console.log("value of likeCount is ", likeCount);
+
 
   return (
     <li
@@ -55,12 +68,12 @@ const MessageItem = ({ message, handleAdmin }) => {
           </ProfileInfoBtnModal>
 
           <IconBtnControl
-            {...(true ? {color:'red'}: {})}
-            isVisible
+            {...(isLiked ? {color:'red'}: {})}
+            isVisible={canShowIcons}
             iconName='heart'
             tooltip="Like this message"
-            onClick={()=>{}}
-            badgeContent={5}
+            onClick={()=>handleLike(message.id)}
+            badgeContent={34}
           />
         </div>
         <TimeAgo

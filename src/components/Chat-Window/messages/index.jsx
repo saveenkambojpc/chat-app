@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Alert } from 'rsuite';
-import { database } from '../../../misc/firebase';
+import { auth, database } from '../../../misc/firebase';
 
 import { transformToArrayWithId } from '../../../misc/helpers';
 import MessageItem from './MessageItem';
@@ -40,19 +40,53 @@ const Messages = () => {
         if (admins) {
           if (admins[uid]) {
             admins[uid] = null;
-            alertMsg = "Admin Permission Removed"
+            alertMsg = 'Admin Permission Removed';
           } else {
             admins[uid] = true;
-            alertMsg = "Admin Permission Granted"
+            alertMsg = 'Admin Permission Granted';
           }
         }
         return admins;
       });
 
-      Alert.info(alertMsg,4000)
+      Alert.info(alertMsg, 4000);
     },
     [chatId]
   );
+
+  const handleLike = useCallback(async msgId => {
+
+    const messageRef = database.ref(`/messages/${msgId}`);
+    const { uid } = auth.currentUser;
+
+    let alertMsg;
+
+    await messageRef.transaction(msg => {
+      console.log(msg);
+      if (msg) {
+        if (msg.likes && msg.likes[uid]) {
+          console.log("Inside inner if")
+          msg.likeCount -= 1;
+          msg.likes[uid] = null;
+          alertMsg = 'Like removed';
+        } else {
+          console.log("We are inside else", msg.likeCount)
+          msg.likeCount += 1;
+          
+          if (!msg.likes) {
+            console.log("inside else -> if")
+            msg.likes = {};
+          }
+
+          msg.likes[uid] = true;
+          alertMsg = 'Like added';
+        }
+      }
+
+      return msg;
+    });
+
+  }, []);
 
   return (
     <ul className="msg-list custom-scroll">
@@ -64,6 +98,7 @@ const Messages = () => {
             key={message.id}
             message={message}
             handleAdmin={handleAdmin}
+            handleLike={handleLike}
           />
         ))}
     </ul>
