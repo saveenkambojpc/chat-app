@@ -4,6 +4,7 @@ import { Alert, Button, Icon, Tag } from 'rsuite';
 import { auth } from '../../misc/firebase'
 
 const ProviderBlock = () => {
+    console.log("Provider block is called on that time")
     const [isConnected, setIsConnected] = useState({
         'google.com': auth.currentUser.providerData.some(p => p.providerId === 'google.com'),
         'facebook.com': auth.currentUser.providerData.some(p => p.providerId === 'facebook.com'),
@@ -30,6 +31,7 @@ const ProviderBlock = () => {
             Alert.error(err.message, 4000);
         }
     }
+
     const link = async provider => {
         try {
             await auth.currentUser.linkWithPopup(provider);
@@ -88,3 +90,6 @@ const ProviderBlock = () => {
 }
 
 export default ProviderBlock
+
+
+

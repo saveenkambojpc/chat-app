@@ -7,8 +7,6 @@ import { useProfile } from '../context/profile.context';
 
 export default function PrivateRoute({children,...routeProps}) {
 
-    // const profile = false;
-    // const profile = useContext(profileContext);
     const {profile, isLoading} = useProfile();
     
     if(isLoading){

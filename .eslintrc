@@ -50,6 +50,7 @@
     "arrow-body-style":"off",
     "react/self-closing-comp": "warn",
     "spaced-comment":"warn",
-    "prefer-template":"warn"
+    "prefer-template":"warn",
+    "prefer-arrow-callback":"warn"
   }
 }
