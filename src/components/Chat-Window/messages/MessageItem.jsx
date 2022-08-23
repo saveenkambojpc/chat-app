@@ -9,7 +9,7 @@ import PresenceDot from '../../PresenceDot';
 import IconBtnControl from './IconBtnControl';
 import ProfileInfoBtnModal from './ProfileInfoBtnModal';
 
-const MessageItem = ({ message, handleAdmin, handleLike }) => {
+const MessageItem = ({ message, handleAdmin, handleLike,handleDelete }) => {
   console.log(message);
   const { author, createdAt, text, likes, likeCount } = message;
 
@@ -25,15 +25,11 @@ const MessageItem = ({ message, handleAdmin, handleLike }) => {
 
   const canGrantAdmin = isAdmin && !isAuthor;
 
-
-
-
   const canShowIcons = isMobile || isHovered;
   // Check whether the message is liked by a particular user
   const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
 
-  console.log("value of likeCount is ", likeCount);
-
+  console.log('value of likeCount is ', likeCount);
 
   return (
     <li
@@ -68,13 +64,21 @@ const MessageItem = ({ message, handleAdmin, handleLike }) => {
           </ProfileInfoBtnModal>
 
           <IconBtnControl
-            {...(isLiked ? {color:'red'}: {})}
+            {...(isLiked ? { color: 'red' } : {})}
             isVisible={canShowIcons}
-            iconName='heart'
+            iconName="heart"
             tooltip="Like this message"
-            onClick={()=>handleLike(message.id)}
-            badgeContent={34}
+            onClick={() => handleLike(message.id)}
+            badgeContent={likeCount}
           />
+          {isAuthor && (
+            <IconBtnControl
+              isVisible={canShowIcons}
+              iconName="close"
+              tooltip="Delete this message"
+              onClick={() => handleDelete(message.id)}
+            />
+          )}
         </div>
         <TimeAgo
           datetime={createdAt}

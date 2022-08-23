@@ -1,12 +1,8 @@
 import React from 'react';
-import { Badge, Icon, IconButton, Tooltip, Whisper } from 'rsuite';
+import { Badge, Whisper, Tooltip, IconButton, Icon } from 'rsuite';
 
-const ConditionalBadge = ({condition, children}) => {
-  return condition ? (
-    <Badge content={condition}>{children}</Badge>
-  ) : (
-    { children }
-  );
+const ConditionalBadge = ({ condition, children }) => {
+  return condition ? <Badge content={condition}>{children}</Badge> : children;
 };
 
 const IconBtnControl = ({
@@ -17,11 +13,9 @@ const IconBtnControl = ({
   badgeContent,
   ...props
 }) => {
-
-  console.log("Value of badgeContent is : ", badgeContent);
   return (
     <div
-      className="mb-2"
+      className="ml-2"
       style={{ visibility: isVisible ? 'visible' : 'hidden' }}
     >
       <ConditionalBadge condition={badgeContent}>
@@ -29,6 +23,7 @@ const IconBtnControl = ({
           placement="top"
           delay={0}
           delayHide={0}
+          delayShow={0}
           trigger="hover"
           speaker={<Tooltip>{tooltip}</Tooltip>}
         >
@@ -37,8 +32,8 @@ const IconBtnControl = ({
             onClick={onClick}
             circle
             size="xs"
-            icon={<Icon icon={iconName}></Icon>}
-          ></IconButton>
+            icon={<Icon icon={iconName} />}
+          />
         </Whisper>
       </ConditionalBadge>
     </div>

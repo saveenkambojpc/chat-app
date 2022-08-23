@@ -65,16 +65,16 @@ const Messages = () => {
       console.log(msg);
       if (msg) {
         if (msg.likes && msg.likes[uid]) {
-          console.log("Inside inner if")
+          console.log('Inside inner if');
           msg.likeCount -= 1;
           msg.likes[uid] = null;
           alertMsg = 'Like removed';
         } else {
-          console.log("We are inside else", msg.likeCount)
+          console.log('We are inside else', msg.likeCount);
           msg.likeCount += 1;
-          
+
           if (!msg.likes) {
-            console.log("inside else -> if")
+            console.log('inside else -> if');
             msg.likes = {};
           }
 
@@ -85,8 +85,41 @@ const Messages = () => {
 
       return msg;
     });
-
   }, []);
+
+  const handleDelete = useCallback(
+    async msgId => {
+      if (!window.confirm('Delete this message ?')) {
+        return;
+      }
+
+      const isLast = messages[messages.length - 1].id === msgId;
+      const updates = {};
+
+      updates[`/messages/${msgId}`] = null;
+
+      if (isLast && messages.length > 1) {
+        updates[`/rooms/${chatId}/lastMessage`] = {
+          ...messages[messages.length - 2],
+          msgId: messages[messages.length - 2].id,
+        };
+      }
+
+      // Case: only message left
+      if (isLast && messages.length === 1) {
+        updates[`/rooms/${chatId}/lastMessage`] = null;
+      }
+
+      // Update our db
+      try {
+        await database.ref().update(updates);
+        Alert.info('Message has been deleted');
+      } catch (err) {
+        Alert.error(err.message);
+      }
+    },
+    [chatId, messages]
+  );
 
   return (
     <ul className="msg-list custom-scroll">
@@ -99,6 +132,7 @@ const Messages = () => {
             message={message}
             handleAdmin={handleAdmin}
             handleLike={handleLike}
+            handleDelete={handleDelete}
           />
         ))}
     </ul>
