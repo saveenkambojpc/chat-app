@@ -29,8 +29,7 @@ const getText = presence => {
 const PresenceDot = ({ uid }) => {
 
   const presence = usePresence(uid)
-  
-  console.log(uid, presence);
+
   return (
     <Whisper
       placement="top"

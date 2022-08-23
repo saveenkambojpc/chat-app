@@ -47,3 +47,7 @@ export async function getUserUpdates(userId, keyToUpdate, value, db) {
 
   return updates;
 }
+
+export function transfornToArr(snapVal) {
+  return snapVal ? Object.keys(snapVal) : [];
+}
