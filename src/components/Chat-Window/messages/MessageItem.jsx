@@ -2,13 +2,17 @@ import React, { memo } from 'react';
 import { Button } from 'rsuite';
 import TimeAgo from 'timeago-react';
 import { useCurrentRoom } from '../../../context/current-room.context';
+import { useHover } from '../../../misc/custom-hooks';
 import { auth } from '../../../misc/firebase';
 import ProfileAvatar from '../../Dashboard/ProfileAvatar';
 import PresenceDot from '../../PresenceDot';
+import IconBtnControl from './IconBtnControl';
 import ProfileInfoBtnModal from './ProfileInfoBtnModal';
 
 const MessageItem = ({ message, handleAdmin }) => {
   const { author, createdAt, text } = message;
+
+  const [selfRef, isHovered] = useHover();
 
   const isAdmin = useCurrentRoom(v => v.isAdmin); //add memo at export
   const admins = useCurrentRoom(v => v.admins);
@@ -18,10 +22,11 @@ const MessageItem = ({ message, handleAdmin }) => {
 
   const canGrantAdmin = isAdmin && !isAuthor;
 
- 
-
   return (
-    <li className="padded mb-1">
+    <li
+      ref={selfRef}
+      className={`padded mb-1 cursor-pointer ${isHovered ? 'bg-black-05' : ''}`}
+    >
       <div className="d-flex align-items-center font-bolder justify-content-between  mb-1">
         <div className="d-flex align-items-center">
           <PresenceDot uid={author.uid} />
@@ -37,11 +42,26 @@ const MessageItem = ({ message, handleAdmin }) => {
             className="p-0 ml-1 text-black"
           >
             {canGrantAdmin && (
-              <Button block onClick={() => handleAdmin(author.uid)} color="blue">
-                {isMsgAuthorAdmin ? "Remove admin permission": "Give admin in this room"}
+              <Button
+                block
+                onClick={() => handleAdmin(author.uid)}
+                color="blue"
+              >
+                {isMsgAuthorAdmin
+                  ? 'Remove admin permission'
+                  : 'Give admin in this room'}
               </Button>
             )}
           </ProfileInfoBtnModal>
+
+          <IconBtnControl
+            {...(true ? {color:'red'}: {})}
+            isVisible
+            iconName='heart'
+            tooltip="Like this message"
+            onClick={()=>{}}
+            badgeContent={5}
+          />
         </div>
         <TimeAgo
           datetime={createdAt}
