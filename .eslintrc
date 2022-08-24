@@ -51,6 +51,8 @@
     "react/self-closing-comp": "warn",
     "spaced-comment":"warn",
     "prefer-template":"warn",
-    "prefer-arrow-callback":"warn"
+    "prefer-arrow-callback":"warn",
+    "jsx-a11y/media-has-caption":"warn",
+    "consistent-return":"warn"
   }
 }

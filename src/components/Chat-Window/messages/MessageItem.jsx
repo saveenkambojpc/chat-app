@@ -10,15 +10,24 @@ import IconBtnControl from './IconBtnControl';
 import ImageBtnModel from './ImageBtnModel';
 import ProfileInfoBtnModal from './ProfileInfoBtnModal';
 
-const renderFileMessage = (file) =>{
-
-  if(file.contentType.includes('image')){
-    return <div className='height-220'>
-      <ImageBtnModel src={file.url} fileName={file.name} />
-    </div>
+const renderFileMessage = file => {
+  if (file.contentType.includes('image')) {
+    return (
+      <div className="height-220">
+        <ImageBtnModel src={file.url} fileName={file.name} />
+      </div>
+    );
   }
-  return <a href={file.url}>Download {file.name}</a>
-}
+
+  if (file.contentType.includes('audio')) {
+    return <audio controls>
+      <source src={file.url} type="audio/mp3" />
+      <track ></track>
+      Your browser does not support the audio element;
+    </audio>
+  }
+  return <a href={file.url}>Download {file.name}</a>;
+};
 
 const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   console.log(message);
@@ -39,8 +48,6 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   const canShowIcons = isMobile || isHovered;
   // Check whether the message is liked by a particular user
   const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
-
-  
 
   return (
     <li
@@ -87,7 +94,7 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
               isVisible={canShowIcons}
               iconName="close"
               tooltip="Delete this message"
-              onClick={() => handleDelete(message.id)}
+              onClick={() => handleDelete(message.id,file)}
             />
           )}
         </div>
