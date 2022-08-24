@@ -1,35 +1,80 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import { Alert } from 'rsuite';
+import { Alert, Button } from 'rsuite';
 import { auth, database, storage } from '../../../misc/firebase';
 
 import { groupBy, transformToArrayWithId } from '../../../misc/helpers';
 import MessageItem from './MessageItem';
 
+const PAGE_SIZE = 5;
+const ref = database.ref('/messages');
+
+function shouldScrollToBottom(node, threshold = 30) {
+  const percentage =
+    (100 * node.scrollTop) / (node.scrollHeight - node.clientHeight) || 0;
+
+  return percentage > threshold;
+}
+
 const Messages = () => {
-  const [messages, setMessages] = useState(null);
   const { chatId } = useParams();
+  const [messages, setMessages] = useState(null);
+  const [limit, setLimit] = useState(PAGE_SIZE);
+  const selfRef = useRef();
 
   const isChatEmpty = messages && messages.length === 0;
   const canShowMessage = messages && messages.length > 0;
 
-  useEffect(() => {
-    // Get a database reference to our posts
-    const ref = database
-      .ref('/messages')
-      .orderByChild('roomId')
-      .equalTo(chatId);
+  const loadMessages = useCallback(
+    limitToLast => {
+      const node = selfRef.current;
+      ref.off(); //unsubscibe from the previous request
 
-    // Attach an asynchronous callback to read the data at our posts reference
-    ref.on('value', snapshot => {
-      const data = transformToArrayWithId(snapshot.val());
-      setMessages(data);
-    });
+      // Get a database reference to our posts
+      ref
+        .orderByChild('roomId')
+        .equalTo(chatId)
+        .limitToLast(limitToLast || PAGE_SIZE)
+        .on('value', snapshot => {
+          const data = transformToArrayWithId(snapshot.val());
+          setMessages(data);
+
+          if(shouldScrollToBottom(node)){
+            node.scrollTop = node.scrollHeight
+          }
+        });
+
+      setLimit(p => p + PAGE_SIZE);
+    },
+    [chatId]
+  );
+
+  const onLoadMore = useCallback(() => {
+    const node = selfRef.current;
+    const oldHeight = node.scrollHeight;
+
+    loadMessages(limit);
+
+    setTimeout(() => {
+      const newHeight = node.scrollHeight;
+      node.scrollTop = newHeight - oldHeight;
+    }, 1000);
+  }, [loadMessages, limit]);
+
+  useEffect(() => {
+    const node = selfRef.current;
+    console.log('Before load msg');
+    loadMessages();
+    console.log('After Load Message');
+
+    setTimeout(() => {
+      node.scrollTop = node.scrollHeight;
+    }, 1000);
 
     return () => {
-      ref.off();
+      ref.off('value');
     };
-  }, [chatId]);
+  }, [loadMessages]);
 
   const handleAdmin = useCallback(
     async uid => {
@@ -81,7 +126,7 @@ const Messages = () => {
           alertMsg = 'Like added';
         }
       }
-
+      Alert.info(alertMsg);
       return msg;
     });
   }, []);
@@ -160,9 +205,15 @@ const Messages = () => {
   };
 
   return (
-    <ul className="msg-list custom-scroll">
+    <ul ref={selfRef} className="msg-list custom-scroll">
+      {messages && messages.length >= PAGE_SIZE && (
+        <li className="text-center mt-2 mb-2">
+          <Button color="blue" onClick={onLoadMore}>
+            Load More
+          </Button>
+        </li>
+      )}
       {isChatEmpty && <li>No messages yet</li>}
-
       {canShowMessage && renderMessages()}
     </ul>
   );

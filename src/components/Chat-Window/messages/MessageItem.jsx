@@ -30,7 +30,6 @@ const renderFileMessage = file => {
 };
 
 const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
-  console.log(message);
   const { author, createdAt, text, file, likes, likeCount } = message;
 
   const [selfRef, isHovered] = useHover();
