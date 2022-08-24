@@ -59,7 +59,9 @@ const AttachmentBtnModal = ({ afterUpload }) => {
       </InputGroup.Button>
 
       <Modal show={isOpen} onHide={close}>
-        <Modal.Header></Modal.Header>
+        <Modal.Header>
+          <Modal.Title>Upload your File here</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <Uploader
             autoUpload={false}
@@ -70,16 +72,17 @@ const AttachmentBtnModal = ({ afterUpload }) => {
             multiple
             className="w-100"
             disabled={isLoading}
+            
           />
         </Modal.Body>
         <Modal.Footer>
           <Button
             block
-            color="green"
+            color="blue"
             disabled={isLoading}
             onClick={onUploadBtn}
           >
-            Upload
+            Send to chat
           </Button>
           <div className="mt-2">
             <small>only files less than 5MB are allowed</small>

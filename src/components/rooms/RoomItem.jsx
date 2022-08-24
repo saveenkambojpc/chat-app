@@ -30,7 +30,7 @@ const RoomItem = ({ room }) => {
 
               <div className="d-flex flex-column text-disappear ml-2" style={{justifyContent:"space-evenly"}}>
                 <div className="italic">{lastMessage.author.name}</div>
-                <span>{lastMessage.text}</span>
+                <span>{lastMessage.text || lastMessage.file.name}</span>
               </div>
             </div>
           ) : (

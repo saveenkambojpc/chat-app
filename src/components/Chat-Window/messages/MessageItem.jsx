@@ -7,11 +7,22 @@ import { auth } from '../../../misc/firebase';
 import ProfileAvatar from '../../Dashboard/ProfileAvatar';
 import PresenceDot from '../../PresenceDot';
 import IconBtnControl from './IconBtnControl';
+import ImageBtnModel from './ImageBtnModel';
 import ProfileInfoBtnModal from './ProfileInfoBtnModal';
 
-const MessageItem = ({ message, handleAdmin, handleLike,handleDelete }) => {
+const renderFileMessage = (file) =>{
+
+  if(file.contentType.includes('image')){
+    return <div className='height-220'>
+      <ImageBtnModel src={file.url} fileName={file.name} />
+    </div>
+  }
+  return <a href={file.url}>Download {file.name}</a>
+}
+
+const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   console.log(message);
-  const { author, createdAt, text, likes, likeCount } = message;
+  const { author, createdAt, text, file, likes, likeCount } = message;
 
   const [selfRef, isHovered] = useHover();
 
@@ -29,7 +40,7 @@ const MessageItem = ({ message, handleAdmin, handleLike,handleDelete }) => {
   // Check whether the message is liked by a particular user
   const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
 
-  console.log('value of likeCount is ', likeCount);
+  
 
   return (
     <li
@@ -86,8 +97,10 @@ const MessageItem = ({ message, handleAdmin, handleLike,handleDelete }) => {
         />
       </div>
 
+      {/* Message and Images Container */}
       <div>
-        <span className="word-break-all ">{text}</span>
+        {text && <span className="word-break-all ">{text}</span>}
+        {file && renderFileMessage(file)}
       </div>
     </li>
   );
