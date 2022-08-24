@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import { useParams } from 'react-router';
 import { useProfile } from '../../../context/profile.context';
 import { database } from '../../../misc/firebase';
+import AttachmentBtnModal from './AttachmentBtnModal';
 
 const assembledMessage = (profile, chatId) => {
   return {
@@ -38,9 +39,8 @@ const ChatBottom = () => {
     const msgData = assembledMessage(profile, chatId);
     msgData.text = input;
 
-    const messageId = database.ref(`message`).push().key;
-
     const updates = {};
+    const messageId = database.ref(`message`).push().key;
 
     updates[`/messages/${messageId}`] = msgData;
     updates[`/rooms/${chatId}/lastMessage`] = {
@@ -64,9 +64,42 @@ const ChatBottom = () => {
   const onPressEnter = ev => {
     onSendClick();
   };
+
+  const afterUpload = useCallback(async files => {
+    setIsLoading(true);
+
+    const updates = {};
+
+    files.forEach(file => {
+      const msgData = assembledMessage(profile, chatId);
+      msgData.file = file;
+  
+      const messageId = database.ref(`message`).push().key;
+      updates[`/messages/${messageId}`] = msgData;
+    });
+
+    const lastMsgId = Object.keys(updates).pop();
+
+    updates[`/rooms/${chatId}/lastMessage`] = {
+      ...updates[lastMsgId],
+      msgId: lastMsgId,
+    };
+
+    // Update into database
+    try {
+      await database.ref().update(updates);
+      setIsLoading(false);
+    } catch (err) {
+      Alert.error(err.message, 4000);
+      setIsLoading(false);
+    }
+
+  }, [chatId,profile]);
+
   return (
     <div>
       <InputGroup>
+        <AttachmentBtnModal afterUpload={afterUpload} />
         <Input
           placeholder="Write a new message here ..."
           value={input}
